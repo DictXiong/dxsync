@@ -9,12 +9,11 @@ touch "$STATUS_INDEX"
 presync() {
     local name="$1"
     local log_file="$STATUS_FOLDER"/$name.log
-    grep -qxF -- "$name" "$STATUS_INDEX" || echo "$name" >> "$STATUS_INDEX"
     if [[ -f "$log_file" ]]; then
-        sed -i "4c syncing..." "$log_file"
-        sed -i "3c $(date +'%Y-%m-%d %H:%M:%S')" "$log_file"
+        sed -i "3c syncing..." "$log_file"
+        sed -i "2c $(date +'%Y-%m-%d %H:%M:%S')" "$log_file"
     else
-        echo -e "${name}\n0\n0\niniting..." > "$log_file"
+        echo -e "0\n0\niniting..." > "$log_file"
     fi
 }
 
@@ -22,32 +21,42 @@ postsync() {
     local name="$1"
     local status="$2"
     local dst="$3"
-    echo -e "${name}\n$(du -h --max-depth=0 "$dst" | awk '{print $1}')\n$(date +'%Y-%m-%d %H:%M:%S')\n${status}" > "$STATUS_FOLDER"/$name.log
+    echo -e "$(du -h --max-depth=0 "$dst" | awk '{print $1}')\n$(date +'%Y-%m-%d %H:%M:%S')\n${status}" > "$STATUS_FOLDER"/$name.log
 }
 
 locked() {
     local name="$1"
-    sed -i  '4 s/$/?/' "$STATUS_FOLDER"/$name.log
+    sed -i  '3 s/$/?/' "$STATUS_FOLDER"/$name.log
 }
 
 do_sync() {
     local name="$1"
+    local safe_name="${name//\//_}"
     local src="$2"
     local dst="$3"
 
-    local lock_file="/tmp/mirror-$name.lock"
+    local lock_file="/tmp/mirror-$safe_name.lock"
     if [ ! -f "$lock_file" ];
     then
         touch "$lock_file"
-            presync "$name"
-            mkdir -p "$(dirname "$dst")"
-            rsync -avzthP --stats --delete --bwlimit=6000 "$src" "$dst"
-            postsync "$name" $? "$dst"
+        presync "$safe_name"
+        mkdir -p "$(dirname "$dst")"
+        rsync -avzthP --stats --delete --bwlimit=6000 "$src" "$dst"
+        postsync "$safe_name" $? "$dst"
         rm "$lock_file"
     else
-        locked "$name"
+        locked "$safe_name"
     fi
 }
+
+append_index() {
+    echo "$1" >> "$STATUS_INDEX"
+}
+
+echo > "$STATUS_INDEX"
+while read p || [[ -n $p ]]; do
+    append_index $p
+done < "$THIS_DIR"/config
 
 while read p || [[ -n $p ]]; do
     do_sync $p

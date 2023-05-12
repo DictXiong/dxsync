@@ -1,0 +1,2 @@
+putty rsync://mirrors4.tuna.tsinghua.edu.cn/putty /tmp/putty
+github-raw/subfolder rsync://mirrors4.tuna.tsinghua.edu.cn/github-raw /tmp/github-raw

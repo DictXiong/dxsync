@@ -77,21 +77,20 @@
                     if (name.length == 0) {
                         continue;
                     }
-                    $.get(name + ".log", function (data) {
+                    safe_name = name.replace(/\//g, "_");
+                    $.get(safe_name + ".log", function (data) {
                         var data = data.split("\n");
-                        data[0] =
-                            "<a href='../" + data[0] + "'>" + data[0] + "</a>";
+                        line_header =
+                            "<td><a href='../" + name + "'>" + name + "</a></td>";
                         for (j in data) {
                             if (data[j] != "") {
                                 data[j] = "<td>" + data[j] + "</td>";
                             }
                         }
                         $("#mirror_list").append(
-                            "<tr id='" +
-                                name +
-                                "'>" +
-                                data.join("") +
-                                "</tr>"
+                            "<tr id='" + safe_name + "'>" +
+                                line_header + data.join("") +
+                            "</tr>"
                         );
                         console.log(data);
                     });
