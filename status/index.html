@@ -61,11 +61,6 @@
                         </tr>
                     </thead>
                     <tbody align="center" id="mirror_list">
-                        <!--                                <tr id="ubuntu"> </tr>
-                                <tr id="ubuntu-releases"> </tr>
-                                <tr id="CTAN"> </tr>
-                                <tr id="docker-ce-linux-ubuntu"> </tr>
--->
                     </tbody>
                 </table>
                 <footer>
@@ -75,36 +70,33 @@
         </section>
 
         <script>
-            var list = [
-                "ubuntu",
-                "ubuntu-releases",
-                "CTAN",
-                "docker-ce/linux/ubuntu",
-            ];
-            for (i in list) {
-                (function (mirror) {
-                    var secure_name = mirror.replace(/\//g, "-");
-                    $.get(secure_name + ".log", function (data) {
+            $.get("index", function(data){
+                list = data.split('\n')
+                for (i in list) {
+                    name=list[i]
+                    if (name.length == 0) {
+                        continue;
+                    }
+                    $.get(name + ".log", function (data) {
                         var data = data.split("\n");
                         data[0] =
                             "<a href='../" + data[0] + "'>" + data[0] + "</a>";
-                        for (i in data) {
-                            if (data[i] != "") {
-                                data[i] = "<td>" + data[i] + "</td>";
+                        for (j in data) {
+                            if (data[j] != "") {
+                                data[j] = "<td>" + data[j] + "</td>";
                             }
                         }
-                        //$("#" + secure_name).html(data);
                         $("#mirror_list").append(
                             "<tr id='" +
-                                secure_name +
+                                name +
                                 "'>" +
                                 data.join("") +
                                 "</tr>"
                         );
                         console.log(data);
                     });
-                })(list[i]);
-            }
+                }
+            })
         </script>
 
         <div hidden id="bottom-bar">
