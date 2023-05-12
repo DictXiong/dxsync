@@ -40,8 +40,8 @@ do_sync() {
     then
         touch "$lock_file"
             presync "$name"
-            echo rsync -4avzthP --stats --delete --bwlimit=6000 "$src" "$dst"
-            postsync "$name" $?
+            rsync -avzthP --stats --delete --bwlimit=6000 "$src" "$dst"
+            postsync "$name" $? "$dst"
         rm "$lock_file"
     else
         locked "$name"
