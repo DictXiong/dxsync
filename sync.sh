@@ -40,6 +40,7 @@ do_sync() {
     then
         touch "$lock_file"
             presync "$name"
+            mkdir -p "$(dirname "$dst")"
             rsync -avzthP --stats --delete --bwlimit=6000 "$src" "$dst"
             postsync "$name" $? "$dst"
         rm "$lock_file"
