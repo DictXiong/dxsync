@@ -71,16 +71,16 @@
 
         <script>
             $.get("index", function(data){
-                list = data.split('\n')
+                const list = data.split('\n')
                 for (i in list) {
-                    name=list[i]
+                    const name=list[i]
                     if (name.length == 0) {
                         continue;
                     }
-                    safe_name = name.replace(/\//g, "_");
+                    const safe_name = name.replace(/\//g, "_");
                     $.get(safe_name + ".log", function (data) {
                         var data = data.split("\n");
-                        line_header =
+                        const line_header =
                             "<td><a href='../" + name + "'>" + name + "</a></td>";
                         for (j in data) {
                             if (data[j] != "") {
