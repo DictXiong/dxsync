@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <link
+            href="https://fonts.loli.net/css?family=Open+Sans:300,400,700|Ubuntu:300|Consolas"
+            rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css"
+            rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="https://tools.beardic.cn/css/page.css"
+            rel="stylesheet"
+            type="text/css"
+        />
+
+        <link
+            rel="icon"
+            href="https://tools.beardic.cn/icon/favicon_32.png"
+            sizes="32x32"
+        />
+        <link
+            rel="icon"
+            href="https://tools.beardic.cn/icon/favicon_192.png"
+            sizes="192x192"
+        />
+        <link
+            rel="icon"
+            href="https://tools.beardic.cn/icon/favicon.png"
+            sizes="512x512"
+        />
+        <link rel="apple-touch-icon-precomposed" href="/icon/favicon_180.png" />
+        <meta name="msapplication-TileImage" content="/icon/favicon_270.png" />
+
+        <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://tools.beardic.cn/js/pagemap.min.js"></script>
+        <script src="https://tools.beardic.cn/js/page.js"></script>
+
+        <title>ibd.ink / mirrors</title>
+    </head>
+
+    <body>
+        <section class="container md-shadow">
+            <article>
+                <header>
+                    <h1>ibd.ink / mirrors: Status</h1>
+                </header>
+                <table align="center">
+                    <thead>
+                        <tr>
+                            <th>mirror</th>
+                            <th>size</th>
+                            <th>last update</th>
+                            <th>status</th>
+                        </tr>
+                    </thead>
+                    <tbody align="center" id="mirror_list">
+                        <!--                                <tr id="ubuntu"> </tr>
+                                <tr id="ubuntu-releases"> </tr>
+                                <tr id="CTAN"> </tr>
+                                <tr id="docker-ce-linux-ubuntu"> </tr>
+-->
+                    </tbody>
+                </table>
+                <footer>
+                    <p></p>
+                </footer>
+            </article>
+        </section>
+
+        <script>
+            var list = [
+                "ubuntu",
+                "ubuntu-releases",
+                "CTAN",
+                "docker-ce/linux/ubuntu",
+            ];
+            for (i in list) {
+                (function (mirror) {
+                    var secure_name = mirror.replace(/\//g, "-");
+                    $.get(secure_name + ".log", function (data) {
+                        var data = data.split("\n");
+                        data[0] =
+                            "<a href='../" + data[0] + "'>" + data[0] + "</a>";
+                        for (i in data) {
+                            if (data[i] != "") {
+                                data[i] = "<td>" + data[i] + "</td>";
+                            }
+                        }
+                        //$("#" + secure_name).html(data);
+                        $("#mirror_list").append(
+                            "<tr id='" +
+                                secure_name +
+                                "'>" +
+                                data.join("") +
+                                "</tr>"
+                        );
+                        console.log(data);
+                    });
+                })(list[i]);
+            }
+        </script>
+
+        <div hidden id="bottom-bar">
+            <p>2023 - ©BearDic.cn</p>
+        </div>
+    </body>
+</html>
