@@ -31,7 +31,7 @@ locked() {
 
 do_sync() {
     if [[ -z "$1" ]]; then
-        return;
+        return
     fi
     local name="$1"
     local safe_name="${name//\//_}"
@@ -54,7 +54,7 @@ do_sync() {
 
 append_index() {
     if [[ -z "$1" ]]; then
-        return;
+        return
     fi
     echo "$1" >> "$STATUS_INDEX"
 }
