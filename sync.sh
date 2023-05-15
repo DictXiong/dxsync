@@ -30,6 +30,9 @@ locked() {
 }
 
 do_sync() {
+    if [[ -z "$1" ]]; then
+        return;
+    fi
     local name="$1"
     local safe_name="${name//\//_}"
     local src="$2"
@@ -50,10 +53,14 @@ do_sync() {
 }
 
 append_index() {
+    if [[ -z "$1" ]]; then
+        return;
+    fi
     echo "$1" >> "$STATUS_INDEX"
 }
 
-echo > "$STATUS_INDEX"
+rm "$STATUS_INDEX"
+touch "$STATUS_INDEX"
 while read p || [[ -n $p ]]; do
     append_index $p
 done < "$THIS_DIR"/config
