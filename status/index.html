@@ -42,14 +42,14 @@
         <script src="https://tools.beardic.cn/js/pagemap.min.js"></script>
         <script src="https://tools.beardic.cn/js/page.js"></script>
 
-        <title>ibd.ink / mirrors</title>
+        <title>Status of Mirrors</title>
     </head>
 
     <body>
         <section class="container md-shadow">
             <article>
                 <header>
-                    <h1>ibd.ink / mirrors: Status</h1>
+                    <h1><span id="hostname"></span>/mirrors: status</h1>
                 </header>
                 <table align="center">
                     <thead>
@@ -70,6 +70,7 @@
         </section>
 
         <script>
+            $("#hostname").text(window.location.hostname);
             $.get("index", function(data){
                 const list = data.split('\n')
                 for (i in list) {
